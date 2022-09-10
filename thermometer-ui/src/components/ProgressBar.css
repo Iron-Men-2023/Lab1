@@ -1,0 +1,14 @@
+:root {
+    --barHeight: 0vh;
+    --barColor: rgba(39,106,251,0.8);
+}
+
+.bar {
+    background-color: var(--barColor);
+    width: 100vw;
+    height: var(--barHeight);
+    margin-top: 48%;
+    position: absolute;
+    transition: all 1s ease-out;
+
+}

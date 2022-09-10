@@ -6,7 +6,8 @@ import Home from "./components/pages/Home";
 import Graph from "./components/pages/Graph";
 
 function App() {
-  return (
+
+    return (
     <Router>
         <Navbar/>
         <Routes>

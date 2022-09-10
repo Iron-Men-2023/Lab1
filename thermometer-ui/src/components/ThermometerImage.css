@@ -1,0 +1,15 @@
+:root{
+    --bgColor: #276afb
+}
+.image-container{
+    display: flex;
+    height: 90vh;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bgColor);
+    transition: all 1s ease-out;
+}
+
+.image {
+    height: 70vh;
+}
