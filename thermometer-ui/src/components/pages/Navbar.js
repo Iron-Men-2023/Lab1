@@ -47,7 +47,7 @@ function Navbar(props) {
                     /li>
                     <li>
                         <Link to='/placeholder1' className='nav-links'>
-                            placeholder
+                            Placeholder
                         </Link>
                     </li>
                     <li className='nav-btn'>
