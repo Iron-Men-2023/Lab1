@@ -32,10 +32,6 @@ console.time("async");
 
 async function main() {
 
-  console.log("oui")
-  
-
-
   //This listens to changes on data base and runs when detecting variable change.
   onValue(ref(db, "Lab1/Is_On"), (snapshot) => {
     on_or_off = snapshot.val();
