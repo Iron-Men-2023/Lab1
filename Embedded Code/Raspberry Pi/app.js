@@ -72,66 +72,10 @@ async function main() {
 
 }
 
+
+//Allows use to run our code continuously.
 main().then((ret) => {
   if (ret) console.log(ret);
 }).catch((err) => {
   if (err) console.error(err);
 });
-
-
-
-
-
-
-
-// sense.clear()
-
-// function pixelSetter(row, col, r, g, b) {
-//   sense.setPixel(row, col, [r, g, b]);
-//   console.log('Color changed at pixel coordinates', row + "," + col, "to rgb value of", sense.getPixel(row, col));
-// }
-
-
-// var util = require('util');
-// const { clear } = require('console');
-// const { setPixel } = require('@trbll/sense-hat-led');
-// var num = 0;
-// var numStop = 100;
-
-// console.time("async");
-
-// const db = getDatabase();
-
-
-// var callb = function (e, data) {
-//   var str2 = "";
-//   if (data.pressure && data.humidity) {
-//     var temp = data.temperature.toFixed(3)
-//     var humidity = util.format()
-//     var str2 = util.format('%s %s %s', 'Temp:', finalTemperature, 'Humidity:', data.humidity.toFixed(3));
-//     var str = util.format('Sending temperature and humidity to database')
-//   }
-//   console.log(str)
-//   console.log(str2);
-//   const updates = {};
-//   updates["/temperature"] = finalTemperature;
-//   updates["/humidity"] = data.humidity.toFixed(3);
-//   update(ref(database), updates);
-  
-
-// }
-
-// onValue(ref(db, "Light/update_light"), (snapshot) => {
-
-//   if (snapshot.val()) {
-//     get(ref(db, "Light/")).then(snapshot => {
-//       var red = snapshot.val().light_r;
-//       var green = snapshot.val().light_g;
-//       var blue = snapshot.val().light_b;
-//       var column = snapshot.val().light_col;
-//       var row = snapshot.val().light_row;
-//       pixelSetter(row, column, red, green, blue);
-//     });
-//   }
-// });
-
