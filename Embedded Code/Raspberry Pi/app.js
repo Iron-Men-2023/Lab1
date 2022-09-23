@@ -15,22 +15,16 @@ firebase.initializeApp(firebaseConfig);
 const db = getDatabase();
 
 
-// serialport = require("serialport").SerialPort;
-// var portName = '/dev/ttyAMA0';
 
-// var readData = '';
 
-// var sp = new serialport(portName, {
-//   baudRate: 9600,
-//   dataBits: 8,
-//   parity: 'none',
-//   stopBits: 1,
-//   flowControl: false
-// });
-
-console.time("async");
+// console.time("async");
 
 async function main() {
+
+  
+  
+ 
+
 
   //This listens to changes on data base and runs when detecting variable change.
   onValue(ref(db, "Lab1/Is_On"), (snapshot) => {
