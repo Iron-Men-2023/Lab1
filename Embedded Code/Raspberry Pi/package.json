@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "firebase": "^9.10.0"
+    "firebase": "^9.10.0",
+    "raspi-serial": "^6.0.0",
+    "serialport": "^10.4.0"
   }
 }
