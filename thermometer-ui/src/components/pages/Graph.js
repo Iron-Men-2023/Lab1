@@ -2,8 +2,13 @@ import React, {Component, useState} from 'react';
 import Chart from '../Chart'
 import './Graph.css'
 import * as CanvasJSReact from "canvasjs-react-charts";
+import {database} from "../../firebase";
+import {getDatabase, ref, onValue} from "firebase/database";
+import firebase from "firebase/compat";
+
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
 
 class Graph extends Component {
 
@@ -12,7 +17,8 @@ class Graph extends Component {
         this.generateDataPoints = this.generateDataPoints.bind(this);
         this.state = {
             dp: [{x:0, y:0}],
-            val: ""
+            val: "",
+            dbData: {}
         }
     }
 
@@ -24,6 +30,13 @@ class Graph extends Component {
         // this.state.dp = this.state.dp.push({x: this.state.dp[dpLen-1].x + 1,y: event.target.value});
         dp.push({x: dp[dpLen-1].x+1, y: parseInt(val)});
         this.setState(dp)
+        const firebaseRef= ref(database,"Lab1");
+        onValue(firebaseRef, (snapshot) => {
+            this.setState({
+                dbData: snapshot.val()
+            });
+            console.log(this.state.dbData)
+        });
     };
 
     changeVal = event => {
