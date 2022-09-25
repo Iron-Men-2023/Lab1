@@ -7,6 +7,7 @@ import {getDatabase, ref, onValue} from "firebase/database";
 // var CanvasJS = CanvasJSReact.CanvasJS;
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const updateInterval = 1000;
+const firebaseRef = ref(database, "Lab1");
 
 function isNumber(str) {
     if (str.trim() === '') {
@@ -27,6 +28,7 @@ class Graph extends Component {
             val: "",
             generated: false,
             reversed: false,
+            // dbData: {Is_On: true, Is_connected: true, Server_Button: false, Temp_History: '100,123,122,null,null,98,23,55', Temperature: '34.12'}
             dbData: {}
         }
         this.updateChart = this.updateChart.bind(this);
@@ -36,17 +38,49 @@ class Graph extends Component {
     }
 
     updateChart() {
-        const firebaseRef= ref(database,"Lab1");
         onValue(firebaseRef, (snapshot) => {
             this.setState({
                 dbData: snapshot.val()
             });
             console.log(this.state.dbData)
         });
-        for (let index = 0; index < this.state.dp.length; index++) {
-            this.state.dp[index].x = this.state.dp[index].x+1
+
+        function timeout(delay: number) {
+            return new Promise(res => setTimeout(res, delay));
         }
-        this.state.dp.unshift({x: 0, y: 71});
+        /*
+        if (this.state.generated === false) {
+            // await timeout(10000); //for 1 sec delay
+            // console.log()
+            let newDp = []
+            let s = this.state.dbData.Temp_History
+            console.log(s)
+            let splitS = s.split(",")
+            console.log(splitS)
+            for (let index = 0; index < this.state.dbData.Temp_History.length; index++) {
+                if (splitS[index] !== "null") {
+                    newDp.push(Number(splitS[index]))
+                } else {
+                    newDp.push(null)
+                }
+            }
+            for (let index = 0; index < newDp.length; index++) {
+                this.state.dp.push(newDp[index])
+            }
+            this.state.generated = true
+        }
+
+         */
+        for (let index = 0; index < this.state.dp.length; index++) {
+            this.state.dp[index].x = this.state.dp[index].x + 1
+        }
+        // TODO - Will change this to true when its actually connected to device
+        if (this.state.dbData.Server_Button === false) {
+            this.state.dp.unshift({x: 0, y: parseInt(this.state.dbData.Temperature)});
+        } else {
+            this.state.dp.unshift({x: 0, y: null});
+        }
+        // console.log(this.state.dbData.Temperature)
     }
 
     generateDataPoints(noOfDps) {
