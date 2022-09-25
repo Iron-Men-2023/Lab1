@@ -2,7 +2,8 @@ import React, {Component, useState} from 'react';
 import Chart from '../Chart'
 import './Graph.css'
 import * as CanvasJSReact from "canvasjs-react-charts";
-import ResizePanel from "react-resize-panel";
+import {database} from "../../firebase";
+import {getDatabase, ref, onValue} from "firebase/database";
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -14,13 +15,6 @@ function isNumber(str) {
     return !isNaN(str);
 }
 
-import {database} from "../../firebase";
-import {getDatabase, ref, onValue} from "firebase/database";
-import firebase from "firebase/compat";
-
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
 
 class Graph extends Component {
 
@@ -28,57 +22,44 @@ class Graph extends Component {
         super(props);
         this.generateDataPoints = this.generateDataPoints.bind(this);
         this.state = {
-            dp: this.generateDataPoints(50),
+            dp: this.generateDataPoints(300),
             val: "",
-            startVal: 0,
-            endVal: 0,
-            currX: 0,
-            currY: 0,
-            tmpX: 0,
             generated: false,
+            reversed: false,
             dbData: {}
         }
     }
 
+
     handleChange = event => {
-        const {dp, val, startVal, endVal, currX, currY, tmpX} = this.state
+        const {dp, val} = this.state
         const dpLen = dp.length
-        // console.log(dp)
-        console.log(val)
         if (!this.state.generated)
         {
-            let dpTemp = this.state.dp[this.state.dp.length-1].x+1
-            this.state.tmpX = dpTemp
-            this.state.currX = dpTemp
-            // this.state.startVal = dpTemp
             this.state.generated = true
+            this.state.reversed = true
         }
         if(isNumber(val))
         {
-            this.state.tmpX += 1
-            this.state.currX = this.state.tmpX-1
-            dp.push({x: this.state.currX, y: parseInt(val)});
+            const firebaseRef= ref(database,"Lab1");
+            onValue(firebaseRef, (snapshot) => {
+                this.setState({
+                    dbData: snapshot.val()
+                });
+                console.log(this.state.dbData)
+            });
+            for (let index = 0; index < dpLen; index++) {
+                this.state.dp[index].x = this.state.dp[index].x+1
+            }
+            dp.unshift({x: 0, y: parseInt(val)});
             console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
             this.setState(dp)
         }
         else{
-            // this.state.dp = this.state.dp.push({x: this.state.dp[dpLen-1].x + 1,y: event.target.value});
-            this.state.startVal = this.state.currX
-            this.state.tmpX += 1
-            this.state.endVal = this.state.tmpX
+            dp.push({x: this.state.dp[dpLen-1].x + 1, y: null});
+            this.setState(dp)
             console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
         }
-
-        // this.state.dp = this.state.dp.push({x: this.state.dp[dpLen-1].x + 1,y: event.target.value});
-        dp.push({x: dp[dpLen-1].x+1, y: parseInt(val)});
-        this.setState(dp)
-        const firebaseRef= ref(database,"Lab1");
-        onValue(firebaseRef, (snapshot) => {
-            this.setState({
-                dbData: snapshot.val()
-            });
-            console.log(this.state.dbData)
-        });
     };
 
     changeVal = event => {
@@ -89,7 +70,7 @@ class Graph extends Component {
         let xVal = 1, yVal = 100;
         const dps = [];
         for(let i = 0; i < noOfDps; i++) {
-            yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+            yVal = Math.round(75 + Math.random() *(100-75));
             dps.push({x: xVal,y: yVal});
             xVal++;
         }
@@ -108,24 +89,34 @@ class Graph extends Component {
             title: {
                 text: "Try Zooming and Panning"
             },
-            axisX: {
-                title: "Temp",
-                minimum: 0,
-                maximum: 100,
+            axisY: {
+                title: "Temperature Degrees F",
+                minimum: 50,
+                maximum: 122,
                 scale: 1,
-                labelAutoFit: false,
+                labelAutoFit: true,
+
+            },
+            axisX: {
+                title: "Seconds Ago",
+                minimum: 0,
+                maximum: 350,
+                scale: 1,
+                labelAutoFit: true,
+                reversed:  true,
                 valueFormatString: "###0.##",
-                scaleBreaks: {
+                /*scaleBreaks: {
                     type: "wavy",
                     customBreaks: [{
-                        lineThickness: (endVal - startVal),
+                        lineThickness: 0,
                         startValue: startVal,
                         endValue: endVal
                     }]
-                }
+                }*/
             },
             data: [{
                 type: "line",
+                connectNullData: true,
                 dataPoints: val
             }]
         }
