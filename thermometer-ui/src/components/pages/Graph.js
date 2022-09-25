@@ -6,6 +6,7 @@ import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
 // var CanvasJS = CanvasJSReact.CanvasJS;
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const updateInterval = 1000;
 
 function isNumber(str) {
     if (str.trim() === '') {
@@ -28,44 +29,24 @@ class Graph extends Component {
             reversed: false,
             dbData: {}
         }
+        this.updateChart = this.updateChart.bind(this);
+    }
+    componentDidMount() {
+        setInterval(this.updateChart, updateInterval);
     }
 
-
-    handleChange = event => {
-        const {dp, val} = this.state
-        const dpLen = dp.length
-        if (!this.state.generated)
-        {
-            this.state.generated = true
-            this.state.reversed = true
-        }
-        if(isNumber(val))
-        {
-            const firebaseRef= ref(database,"Lab1");
-            onValue(firebaseRef, (snapshot) => {
-                this.setState({
-                    dbData: snapshot.val()
-                });
-                console.log(this.state.dbData)
+    updateChart() {
+        const firebaseRef= ref(database,"Lab1");
+        onValue(firebaseRef, (snapshot) => {
+            this.setState({
+                dbData: snapshot.val()
             });
-            for (let index = 0; index < dpLen; index++) {
-                this.state.dp[index].x = this.state.dp[index].x+1
-            }
-            dp.unshift({x: 0, y: parseInt(val)});
-            console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
-            this.setState(dp)
+            console.log(this.state.dbData)
+        });
+        for (let index = 0; index < this.state.dp.length; index++) {
+            this.state.dp[index].x = this.state.dp[index].x+1
         }
-        else{
-            for (let index = 0; index < dpLen; index++) {
-                this.state.dp[index].x = this.state.dp[index].x+1
-            }
-            dp.unshift({x: 0, y: null});
-            this.setState(dp)
-        }
-    };
-
-    changeVal = event => {
-        this.setState({val:event.target.value});
+        this.state.dp.unshift({x: 0, y: 71});
     }
 
     generateDataPoints(noOfDps) {
@@ -80,16 +61,6 @@ class Graph extends Component {
     }
 
     render() {
-        const delay = (delayInms) => {
-            return new Promise(resolve => setTimeout(resolve, delayInms));
-        }
-
-        const sample = async () => {
-            await delay(1000);
-
-
-        }
-        sample();
         let val = this.state.dp
 
         const options = {
@@ -116,47 +87,20 @@ class Graph extends Component {
                 labelAutoFit: true,
                 reversed:  true,
                 valueFormatString: "###0.##",
-                /*scaleBreaks: {
-                    type: "wavy",
-                    customBreaks: [{
-                        lineThickness: 0,
-                        startValue: startVal,
-                        endValue: endVal
-                    }]
-                }*/
             },
             data: [{
                 type: "line",
                 connectNullData: true,
                 dataPoints: val
             }]
+
         }
+
 
         return (
             <div className={"sizable"}>
-                <button onClick={this.handleChange}>Click</button>
-                <input type="text"
-                       id="value"
-                       name="value"
-                       onChange={this.changeVal}
-
-                />
                 <CanvasJSChart options = {options}></CanvasJSChart>
-
             </div>
-            /*<div className={"resize"}>
-                <input type="text"
-                       id="value"
-                       name="value"
-                       onChange={this.changeVal}
-
-                />
-                <button onClick={this.handleChange}>Click</button>
-                <CanvasJSChart options = {options}
-                    /* onRef={ref => this.chart = ref} */
-                // />
-                //{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-            //</div>
         );
     }
 }
