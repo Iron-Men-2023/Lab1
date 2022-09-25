@@ -1,11 +1,11 @@
 import React, {Component, useState} from 'react';
-import Chart from '../Chart'
+// import Chart from '../Chart'
 import './Graph.css'
 import * as CanvasJSReact from "canvasjs-react-charts";
 import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+// var CanvasJS = CanvasJSReact.CanvasJS;
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 function isNumber(str) {
     if (str.trim() === '') {
@@ -56,9 +56,11 @@ class Graph extends Component {
             this.setState(dp)
         }
         else{
-            dp.push({x: this.state.dp[dpLen-1].x + 1, y: null});
+            for (let index = 0; index < dpLen; index++) {
+                this.state.dp[index].x = this.state.dp[index].x+1
+            }
+            dp.unshift({x: 0, y: null});
             this.setState(dp)
-            console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
         }
     };
 
@@ -78,9 +80,18 @@ class Graph extends Component {
     }
 
     render() {
+        const delay = (delayInms) => {
+            return new Promise(resolve => setTimeout(resolve, delayInms));
+        }
+
+        const sample = async () => {
+            await delay(1000);
+
+
+        }
+        sample();
         let val = this.state.dp
-        let endVal = this.state.endVal
-        let startVal = this.state.startVal
+
         const options = {
             theme: "light2", // "light1", "dark1", "dark2"
             zoomEnabled: true,
