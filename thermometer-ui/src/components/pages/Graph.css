@@ -1,3 +1,8 @@
 .GraphClass{
     margin-top: 150px;
 }
+
+.sizable{
+    resize: both;
+    margin-top: 150px;
+}
