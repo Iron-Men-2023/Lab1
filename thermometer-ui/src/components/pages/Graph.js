@@ -14,6 +14,14 @@ function isNumber(str) {
     return !isNaN(str);
 }
 
+import {database} from "../../firebase";
+import {getDatabase, ref, onValue} from "firebase/database";
+import firebase from "firebase/compat";
+
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
+
 class Graph extends Component {
 
     constructor(props) {
@@ -27,7 +35,8 @@ class Graph extends Component {
             currX: 0,
             currY: 0,
             tmpX: 0,
-            generated: false
+            generated: false,
+            dbData: {}
         }
     }
 
@@ -59,6 +68,17 @@ class Graph extends Component {
             this.state.endVal = this.state.tmpX
             console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
         }
+
+        // this.state.dp = this.state.dp.push({x: this.state.dp[dpLen-1].x + 1,y: event.target.value});
+        dp.push({x: dp[dpLen-1].x+1, y: parseInt(val)});
+        this.setState(dp)
+        const firebaseRef= ref(database,"Lab1");
+        onValue(firebaseRef, (snapshot) => {
+            this.setState({
+                dbData: snapshot.val()
+            });
+            console.log(this.state.dbData)
+        });
     };
 
     changeVal = event => {

@@ -46,8 +46,8 @@ function Navbar(props) {
                         </Link><
                     /li>
                     <li>
-                        <Link to='/placeholder1' className='nav-links'>
-                            Placeholder
+                        <Link to='/text' className='nav-links'>
+                            Text Settings
                         </Link>
                     </li>
                     <li className='nav-btn'>

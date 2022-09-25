@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "firebase": "^9.10.0",
+    "twilio-cli": "^5.0.0"
+  },
+  "devDependencies": {
+    "twilio": "^3.82.1"
+  }
+}
