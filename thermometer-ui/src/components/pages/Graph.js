@@ -1,11 +1,13 @@
 import React, {Component, useState} from 'react';
-import Chart from '../Chart'
+// import Chart from '../Chart'
 import './Graph.css'
 import * as CanvasJSReact from "canvasjs-react-charts";
 import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+// var CanvasJS = CanvasJSReact.CanvasJS;
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const updateInterval = 1000;
+const firebaseRef = ref(database, "Lab1");
 
 function isNumber(str) {
     if (str.trim() === '') {
@@ -26,44 +28,59 @@ class Graph extends Component {
             val: "",
             generated: false,
             reversed: false,
+            // dbData: {Is_On: true, Is_connected: true, Server_Button: false, Temp_History: '100,123,122,null,null,98,23,55', Temperature: '34.12'}
             dbData: {}
         }
+        this.updateChart = this.updateChart.bind(this);
+    }
+    componentDidMount() {
+        setInterval(this.updateChart, updateInterval);
     }
 
-
-    handleChange = event => {
-        const {dp, val} = this.state
-        const dpLen = dp.length
-        if (!this.state.generated)
-        {
-            this.state.generated = true
-            this.state.reversed = true
-        }
-        if(isNumber(val))
-        {
-            const firebaseRef= ref(database,"Lab1");
-            onValue(firebaseRef, (snapshot) => {
-                this.setState({
-                    dbData: snapshot.val()
-                });
-                console.log(this.state.dbData)
+    updateChart() {
+        onValue(firebaseRef, (snapshot) => {
+            this.setState({
+                dbData: snapshot.val()
             });
-            for (let index = 0; index < dpLen; index++) {
-                this.state.dp[index].x = this.state.dp[index].x+1
-            }
-            dp.unshift({x: 0, y: parseInt(val)});
-            console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
-            this.setState(dp)
-        }
-        else{
-            dp.push({x: this.state.dp[dpLen-1].x + 1, y: null});
-            this.setState(dp)
-            console.log(this.state.startVal, this.state.endVal, this.state.tmpX)
-        }
-    };
+            console.log(this.state.dbData)
+        });
 
-    changeVal = event => {
-        this.setState({val:event.target.value});
+        function timeout(delay: number) {
+            return new Promise(res => setTimeout(res, delay));
+        }
+        /*
+        if (this.state.generated === false) {
+            // await timeout(10000); //for 1 sec delay
+            // console.log()
+            let newDp = []
+            let s = this.state.dbData.Temp_History
+            console.log(s)
+            let splitS = s.split(",")
+            console.log(splitS)
+            for (let index = 0; index < this.state.dbData.Temp_History.length; index++) {
+                if (splitS[index] !== "null") {
+                    newDp.push(Number(splitS[index]))
+                } else {
+                    newDp.push(null)
+                }
+            }
+            for (let index = 0; index < newDp.length; index++) {
+                this.state.dp.push(newDp[index])
+            }
+            this.state.generated = true
+        }
+
+         */
+        for (let index = 0; index < this.state.dp.length; index++) {
+            this.state.dp[index].x = this.state.dp[index].x + 1
+        }
+        // TODO - Will change this to true when its actually connected to device
+        if (this.state.dbData.Server_Button === false) {
+            this.state.dp.unshift({x: 0, y: parseInt(this.state.dbData.Temperature)});
+        } else {
+            this.state.dp.unshift({x: 0, y: null});
+        }
+        // console.log(this.state.dbData.Temperature)
     }
 
     generateDataPoints(noOfDps) {
@@ -79,8 +96,7 @@ class Graph extends Component {
 
     render() {
         let val = this.state.dp
-        let endVal = this.state.endVal
-        let startVal = this.state.startVal
+
         const options = {
             theme: "light2", // "light1", "dark1", "dark2"
             zoomEnabled: true,
@@ -105,47 +121,20 @@ class Graph extends Component {
                 labelAutoFit: true,
                 reversed:  true,
                 valueFormatString: "###0.##",
-                /*scaleBreaks: {
-                    type: "wavy",
-                    customBreaks: [{
-                        lineThickness: 0,
-                        startValue: startVal,
-                        endValue: endVal
-                    }]
-                }*/
             },
             data: [{
                 type: "line",
                 connectNullData: true,
                 dataPoints: val
             }]
+
         }
+
 
         return (
             <div className={"sizable"}>
-                <button onClick={this.handleChange}>Click</button>
-                <input type="text"
-                       id="value"
-                       name="value"
-                       onChange={this.changeVal}
-
-                />
                 <CanvasJSChart options = {options}></CanvasJSChart>
-
             </div>
-            /*<div className={"resize"}>
-                <input type="text"
-                       id="value"
-                       name="value"
-                       onChange={this.changeVal}
-
-                />
-                <button onClick={this.handleChange}>Click</button>
-                <CanvasJSChart options = {options}
-                    /* onRef={ref => this.chart = ref} */
-                // />
-                //{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-            //</div>
         );
     }
 }
