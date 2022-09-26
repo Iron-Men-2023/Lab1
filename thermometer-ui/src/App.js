@@ -1,5 +1,5 @@
 import logo from './logo.svg'
-import React from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import Navbar from "./components/pages/Navbar";
 import {BrowserRouter as Router,Routes,Route} from "react-router-dom";
@@ -8,6 +8,10 @@ import Graph from "./components/pages/Graph";
 import TextSettings from "./components/pages/TextSettings";
 
 function App() {
+
+    useEffect(() => {
+        document.title = "Ironmen Lab1"
+    }, [])
 
     return (
     <Router>
