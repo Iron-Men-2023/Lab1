@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import ThermometerImage from "../ThermometerImage";
 import ProgressBar from "../ProgressBar";
 import {database} from "../../firebase";
-import {getDatabase, ref, onValue} from "firebase/database";
+import {getDatabase, ref, child, push, update, onValue} from "firebase/database";
 import Toggle from 'react-toggle'
-
+import "./Home.css"
 function Home(props) {
     const [value, setValue] = useState('0');
     const [dbData,setDbData] = useState({})
+    const [boxIsOn, setBoxIsOn] = useState();
     const [tempUnit, setTempUnit] = useState("F");
     const Toggle = require('react-toggle')
 
@@ -19,6 +20,7 @@ function Home(props) {
 
         return onValue(firebaseRef, (snapshot) => {
             setDbData(snapshot.val());
+            setBoxIsOn(snapshot.val().Is_On)
         });
     }, []);
     function celcToFar(degCelc){
@@ -45,10 +47,35 @@ function Home(props) {
             )
         }
     }
+    function turnOffBox(){
+        const updates = {};
+        boxIsOn? updates['/Lab1/Is_On'] = false:
+            updates['/Lab1/Is_On'] = true;
+
+        return update(ref(database), updates);
+    }
     return (
         <div>
-            <h2>Select Temperature Unit</h2>
-            {displayTemp()}
+
+            <div className="row">
+                <div className="column">
+                    <h2>Select Temperature Unit:</h2>
+                </div>
+                <div className="column"> F</div>
+                <div className="column"></div>
+            </div>
+            <div className="row">
+                <div className="column">
+                    <h3>{displayTemp()}</h3>
+                </div>
+                <div className="column">
+                <input type="button" className="btn"
+                       value ={boxIsOn? "Turn off 3rd box":"Turn on 3rd box" }
+                       onClick={turnOffBox}/>
+
+                </div>
+                <div className="column"></div>
+            </div>
             <ThermometerImage value={value}/>
         </div>
     );
