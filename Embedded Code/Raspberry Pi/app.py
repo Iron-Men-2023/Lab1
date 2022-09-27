@@ -53,14 +53,20 @@ while True:
         if(line=="Switch off"):
             db.child("Lab1").update({"Is_On":False})
             db.child("Lab1").update({"Server_Button":True})
+            complete= db.child("Lab1/Temp_History").get().val()+",null"
+            db.child("Lab1").update({"Temp_History":complete})
     
         elif(line=="Disconnected"):
             db.child("Lab1").update({"Is_connected":False})
+            complete= db.child("Lab1/Temp_History").get().val()+",null"
+            db.child("Lab1").update({"Temp_History":complete})
 
         else:
             db.child("Lab1").update({"Is_connected":True})
             db.child("Lab1").update({"Is_On":True})
             db.child("Lab1").update({"Temperature":line})
+            complete= db.child("Lab1/Temp_History").get().val()+','+line
+            db.child("Lab1").update({"Temp_History":complete})
 
 
 
