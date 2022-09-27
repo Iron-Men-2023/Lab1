@@ -8,7 +8,7 @@ const twilio = require("twilio");
 // Twilio:
 
 const accountSid = 'AC714d61ea681c2b5b001e0e6855fa0afc';
-const authToken = '9b7efb84705095633382602c5c43d666';
+const authToken = 'YourAuthToken';
 const client = new twilio(accountSid, authToken);
 let PORT = process.env.PORT || 4000
 console.log("Here")
@@ -34,6 +34,7 @@ app.get('/send-text',(req, res) =>{
         to: recipient,
         from: '+13393297021' //twilio number
     }).then((message) => console.log(message.body))
+
 
 })
 
