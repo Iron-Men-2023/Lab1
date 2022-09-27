@@ -1,0 +1,35 @@
+.column {
+    float: left;
+    width: 33.33%;
+}
+.column2 {
+    float: left;
+    margin-left: 55%;
+   width: 60%
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.radio{
+    float: left;
+    width: 2%;
+    margin-top: 2%;
+
+}
+.btn{
+    border-radius: 10px;
+    width: 30%;
+    background-color: #276afb;
+    color: white;
+    margin-top: 5%;
+}
+.btn:hover {background-color: #0f50e0
+}
+
+.btn:active {
+    background-color: #021134;
+}
