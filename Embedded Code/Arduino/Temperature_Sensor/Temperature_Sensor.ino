@@ -4,10 +4,15 @@
 #define ONE_WIRE_BUS 3
 
 
+int pin4=A0;
+int pin5=A1;
+int pin6=A2;
+int pin7=A3;
 
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7,pin4,pin5,pin6,pin7);
+LiquidCrystal lcd()
 OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
+DallasTemperature sensors(&oneWire);`1  
 
 String celsius_temp = "";
 String farenheit_temp = "";
@@ -43,8 +48,7 @@ void loop(void) {
   // Sends the command to get temperatures
   sensors.requestTemperatures();
   double temp_celsius = sensors.getTempCByIndex(0);
-  double temp_farenheit = (temp_celsius * 9.0) / 5.0 + 32.0;
-
+  double temp_farenheit = (temp_celsius * 9.0) / 5.0 + 32.0;      
 
 
 
@@ -57,8 +61,8 @@ void loop(void) {
   if (switch_fb == "true") {
 
     if (temp_celsius != -127) {
-
-      if (switch_value == HIGH) {
+        
+      if (switch_value == LOW) {
         // Send a value to pi to start up data in firebase
         // And start listening to arduino for temp
 
