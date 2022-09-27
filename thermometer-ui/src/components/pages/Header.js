@@ -60,26 +60,34 @@ function Header(props) {
     return (
         <div>
             <div className="row">
-                <div className="column">
-                    <h2>Select Temperature Unit:</h2>
-                </div>
-                <div className="radio"> <input type="radio" value="C" name="temp" onClick={()=>setTempUnit('C')}/> </div>
-                <div className="radio">°C </div>
-                <div className="radio"> <input type="radio" value="F" name="temp" onClick={()=>setTempUnit('F')} /></div>
-                <div className="radio">°F </div>
-            </div>
-            <div className="row">
-                <div className="column">
-                    <h3>{displayTemp()}</h3>
-                </div>
-                <div className="column">
-                    <input type="button" className="btn"
-                           value ={boxIsOn? "Turn off 3rd box":"Turn on 3rd box" }
-                           onClick={turnOffBox}/>
+                <div className="column2">
 
+                    <div className="row">
+                        <div className="column">
+                            <h2>Select Temperature Unit:</h2>
+                        </div>
+                        <div className="radio"> <input type="radio" value="C" name="temp" onClick={()=>setTempUnit('C')}/> </div>
+                        <div className="radio">°C </div>
+                        <div className="radio"> <input type="radio" value="F" name="temp" onClick={()=>setTempUnit('F')} /></div>
+                        <div className="radio">°F </div>
+                    </div>
+                    <div className="row">
+                        <div className="column">
+                            <h3>{displayTemp()}</h3>
+                        </div>
+                        <div className="column">
+                            <input type="button" className="btn"
+                                   value ={boxIsOn? "Turn off 3rd box":"Turn on 3rd box" }
+                                   onClick={turnOffBox}/>
+
+                        </div>
+                    </div>
                 </div>
-                <div className="column2"> <TextSettings/></div>
+                <div className="column2">
+                    <TextSettings/>
+                </div>
             </div>
+
         </div>
     );
 }

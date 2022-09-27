@@ -21,7 +21,6 @@ function App() {
         <Routes>
             <Route path='/' element={<Home />}/>
             <Route path='graph' element={<Graph />}/>
-            <Route path='text' element={<TextSettings />}/>
         </Routes>
     </Router>
 
