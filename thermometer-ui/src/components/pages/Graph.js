@@ -4,6 +4,7 @@ import './Graph.css'
 import * as CanvasJSReact from "canvasjs-react-charts";
 import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
+import ToggleSwitch from "../ToggleSwitch";
 // var CanvasJS = CanvasJSReact.CanvasJS;
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const updateInterval = 1000;
@@ -22,22 +23,28 @@ function timeout(delay: number) {
 }
 
 
+
+
 class Graph extends Component {
 
     constructor(props) {
         super(props);
         this.generateDataPoints = this.generateDataPoints.bind(this);
         this.state = {
-            dp: [], //this.generateDataPoints(300),
+            dp: [],
             val: "",
             generated: false,
             reversed: false,
-            // dbData: {Is_On: true, Is_connected: true, Server_Button: false, Temp_History: '100,123,122,null,null,98,23,55', Temperature: '34.12'}
-            dbData: {}
+            dbData: {},
+            tempTitle: "Temperature Degrees C",
+            tempMin: 0,
+            tempMax: 50,
+            currTempC: false
         }
 
         this.updateChart = this.updateChart.bind(this);
     }
+    // Components are created (mounted on the DOM (Document Object Model))
     componentDidMount() {
         setInterval(this.updateChart, updateInterval);
     }
@@ -50,16 +57,14 @@ class Graph extends Component {
             console.log(this.state.dbData)
         });
         let test = this.state.dbData.Is_On
-
+        // Won't go into statement until data has been loaded from firebase
         if (test !== undefined && this.state.generated !== true) {
-            console.log("Waiting")
-            // await timeout(3500); //for 1 sec delay
-            console.log("Done")
             let newDp = []
             let s = this.state.dbData.Temp_History
             console.log(s)
             let splitS = s.split(",")
             console.log(splitS)
+            // Parsing stored data from database
             for (let index = 0; index < splitS.length; index++) {
                 if (splitS[index] !== "null") {
                     newDp.push(Number(splitS[index]))
@@ -67,34 +72,32 @@ class Graph extends Component {
                     newDp.push(null)
                 }
             }
+
             let newX = newDp.length-1
             for (let index = 0; index < newDp.length; index++) {
                 this.state.dp.unshift({x:newX, y:newDp[index]})
                 newX -= 1
             }
 
-            console.log("here")
             this.state.generated = true
+            this.conversion()
         }
         else if (this.state.generated === true){
-
+            // Moves every current x value "left" in graph
             for (let index = 0; index < this.state.dp.length; index++) {
                 this.state.dp[index].x = this.state.dp[index].x + 1
             }
             // TODO - Will change this to true when its actually connected to device
             if (this.state.dbData.Server_Button === true) {
-                this.state.dp.unshift({x: 0, y: Number(this.state.dbData.Temperature)});
+                let tmpTemp = this.conversionOnce(Number(Number(this.state.dbData.Temperature).toFixed(2)))
+                this.state.dp.unshift({x: 0, y: tmpTemp});
             } else {
                 this.state.dp.unshift({x: 0, y: null});
             }
-            // console.log(this.state.dbData.Temperature)
-        }
-        else {
-            // this.state.dp.unshift({x: 0, y: null})
-            console.log("NOOOO")
         }
     }
 
+    // For testing purposes only
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         const dps = [];
@@ -106,8 +109,64 @@ class Graph extends Component {
         return dps;
     }
 
+    // Converts between C and F temps
+    conversion() {
+        if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
+        {
+            for(let i = 0; i < this.state.dp.length; i++)
+            {
+                if (this.state.dp[i].y !== null){
+                    let temp = this.state.dp[i].y
+                    this.state.dp[i].y = (temp-32) * (5.0/9.0)
+                }
+            }
+            this.state.currTempC = true
+            this.state.tempTitle = "Temperature Degrees C"
+            this.state.tempMin = 0
+            this.state.tempMax = 50
+        }
+        else{
+            for(let i = 0; i < this.state.dp.length; i++)
+            {
+                if (this.state.dp[i].y !== null){
+                    let temp = this.state.dp[i].y
+                    this.state.dp[i].y = (temp*(9.0/5.0)) + 32.0
+                }
+            }
+            this.state.currTempC = false
+            this.state.tempTitle = "Temperature Degrees F"
+            this.state.tempMin = 50
+            this.state.tempMax = 122
+        }
+    }
+
+    // Converts number from database if need be
+    conversionOnce(num) {
+        if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
+        {
+            num = (num-32) * (5.0/9.0)
+        }
+        // TODO - this might need to be changed depending on how we store values
+        /*else{
+            num = (num*(9.0/5.0)) + 32.0
+        }*/
+        return num
+    }
+
     render() {
         let val = this.state.dp
+
+        // For when switch is clicked
+        const toggleTemp = () => {
+            this.state.currTempC = this.state.currTempC !== true;
+            if (this.state.currTempC === true){
+                this.state.tempTitle = "Temperature Degrees C"
+            }
+            else{
+                this.state.tempTitle = "Temperature Degrees F"
+            }
+            this.conversion()
+        };
 
         const options = {
             theme: "light2", // "light1", "dark1", "dark2"
@@ -115,12 +174,12 @@ class Graph extends Component {
             zoomAndPan: true,
             maintainAspectRatio: false,
             title: {
-                text: "Try Zooming and Panning"
+                text: "Temp Vs Time Graph"
             },
             axisY: {
-                title: "Temperature Degrees F",
-                minimum: 50,
-                maximum: 122,
+                title: this.state.tempTitle,
+                minimum: this.state.tempMin,
+                maximum: this.state.tempMax,
                 scale: 1,
                 labelAutoFit: true,
 
@@ -144,8 +203,15 @@ class Graph extends Component {
 
 
         return (
-            <div className={"sizable"}>
-                <CanvasJSChart options = {options}></CanvasJSChart>
+            <div className={"GraphPage"}>
+                <div className={"Switch"}>
+                    <React.Fragment >
+                        <ToggleSwitch label="Temperature" onClick={toggleTemp}/>
+                    </React.Fragment>
+                </div>
+                <div className={"Graph"}>
+                    <CanvasJSChart options = {options}></CanvasJSChart>
+                </div>
             </div>
         );
     }
