@@ -17,6 +17,10 @@ function isNumber(str) {
     return !isNaN(str);
 }
 
+function timeout(delay: number) {
+    return new Promise(res => setTimeout(res, delay));
+}
+
 
 class Graph extends Component {
 
@@ -24,13 +28,14 @@ class Graph extends Component {
         super(props);
         this.generateDataPoints = this.generateDataPoints.bind(this);
         this.state = {
-            dp: this.generateDataPoints(300),
+            dp: [], //this.generateDataPoints(300),
             val: "",
             generated: false,
             reversed: false,
             // dbData: {Is_On: true, Is_connected: true, Server_Button: false, Temp_History: '100,123,122,null,null,98,23,55', Temperature: '34.12'}
             dbData: {}
         }
+
         this.updateChart = this.updateChart.bind(this);
     }
     componentDidMount() {
@@ -44,43 +49,50 @@ class Graph extends Component {
             });
             console.log(this.state.dbData)
         });
+        let test = this.state.dbData.Is_On
 
-        function timeout(delay: number) {
-            return new Promise(res => setTimeout(res, delay));
-        }
-        /*
-        if (this.state.generated === false) {
-            // await timeout(10000); //for 1 sec delay
-            // console.log()
+        if (test !== undefined && this.state.generated !== true) {
+            console.log("Waiting")
+            // await timeout(3500); //for 1 sec delay
+            console.log("Done")
             let newDp = []
             let s = this.state.dbData.Temp_History
             console.log(s)
             let splitS = s.split(",")
             console.log(splitS)
-            for (let index = 0; index < this.state.dbData.Temp_History.length; index++) {
+            for (let index = 0; index < splitS.length; index++) {
                 if (splitS[index] !== "null") {
                     newDp.push(Number(splitS[index]))
                 } else {
                     newDp.push(null)
                 }
             }
+            let newX = newDp.length-1
             for (let index = 0; index < newDp.length; index++) {
-                this.state.dp.push(newDp[index])
+                this.state.dp.unshift({x:newX, y:newDp[index]})
+                newX -= 1
             }
+
+            console.log("here")
             this.state.generated = true
         }
+        else if (this.state.generated === true){
 
-         */
-        for (let index = 0; index < this.state.dp.length; index++) {
-            this.state.dp[index].x = this.state.dp[index].x + 1
+            for (let index = 0; index < this.state.dp.length; index++) {
+                this.state.dp[index].x = this.state.dp[index].x + 1
+            }
+            // TODO - Will change this to true when its actually connected to device
+            if (this.state.dbData.Server_Button === true) {
+                this.state.dp.unshift({x: 0, y: Number(this.state.dbData.Temperature)});
+            } else {
+                this.state.dp.unshift({x: 0, y: null});
+            }
+            // console.log(this.state.dbData.Temperature)
         }
-        // TODO - Will change this to true when its actually connected to device
-        if (this.state.dbData.Server_Button === false) {
-            this.state.dp.unshift({x: 0, y: parseInt(this.state.dbData.Temperature)});
-        } else {
-            this.state.dp.unshift({x: 0, y: null});
+        else {
+            // this.state.dp.unshift({x: 0, y: null})
+            console.log("NOOOO")
         }
-        // console.log(this.state.dbData.Temperature)
     }
 
     generateDataPoints(noOfDps) {
@@ -124,7 +136,7 @@ class Graph extends Component {
             },
             data: [{
                 type: "line",
-                connectNullData: true,
+                connectNullData: false,
                 dataPoints: val
             }]
 
