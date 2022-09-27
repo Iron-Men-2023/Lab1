@@ -19,7 +19,7 @@ int button_value = 0;
 const int button_pin = 11;
 
 int sensor_value = 0;
-const int senor_pin = 3;
+const int sensor_pin = 3;
 
 String switch_fb = "true";
 
@@ -36,9 +36,9 @@ void setup(void) {
 
 void loop(void) {
 
-  switch_value = digitalRead(10);
-  button_value = digitalRead(11);
-  sensor_value = digitalRead(3);
+  switch_value = digitalRead(switch_pin);
+  button_value = digitalRead(button_pin);
+  sensor_value = digitalRead(sensor_pin);
 
   // Sends the command to get temperatures
   sensors.requestTemperatures();
@@ -62,9 +62,6 @@ void loop(void) {
         // Send a value to pi to start up data in firebase
         // And start listening to arduino for temp
 
-        // Serial.println("Switch on");
-
-        // Serial.println("Connected");
         Serial.println(temp_celsius);
         if (button_value == HIGH) {
           //Dislays and gets data from the sensor
@@ -85,6 +82,7 @@ void loop(void) {
 
     } else {
       //stop sending value to pi
+      lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Disconnected");
       delay(500);
