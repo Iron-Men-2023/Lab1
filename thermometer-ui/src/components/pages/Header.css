@@ -2,6 +2,11 @@
     float: left;
     width: 33.33%;
 }
+.column2 {
+    float: left;
+    margin-left: 55%;
+   width: 60%
+}
 
 /* Clear floats after the columns */
 .row:after {

@@ -35,7 +35,6 @@ function TextSettings(props)
         return onValue(firebaseRef, (snapshot) => {
             setDbData(snapshot.val());
             const {Is_On, Temperature} = snapshot.val()
-            console.log(maxValueRef.current,parseInt(Temperature),maxValue.current,!outOfBoundsRef.current)
             if(Is_On )
             {
                 if(minValueRef.current && parseInt(Temperature)<minValueRef.current && !outOfBoundsRef.current)
@@ -133,11 +132,6 @@ function TextSettings(props)
                 </div>
             </div>
 
-            <div style={{ marginTop: 25 }} >
-                <h2> Send Text Message </h2>
-
-                <button onClick={sendText}> Send Text </button>
-            </div>
         </div>
     );
 }

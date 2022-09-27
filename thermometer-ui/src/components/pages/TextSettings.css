@@ -10,10 +10,10 @@
     clear: both;
 }
 .form {
-    border-radius: 5px;
+    border-radius: 15px;
     background-color: #f2f2f2;
     padding: 20px;
-    margin-top: 15%;
+    height: 10%
 }
 .text {
     width: 100%;

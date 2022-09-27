@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {onValue, ref, update} from "firebase/database";
 import {database} from "../../firebase";
 import "./Header.css"
+import TextSettings from "./TextSettings";
 function Header(props) {
     const [dbData,setDbData] = useState({})
     const [boxIsOn, setBoxIsOn] = useState();
     const [tempUnit, setTempUnit] = useState("C");
     const Toggle = require('react-toggle')
-
 
     useEffect(() => {
         const firebaseRef= ref(database,"Lab1");
@@ -21,19 +21,28 @@ function Header(props) {
         return degCelc *9/5 +32
     }
     function displayTemp(){
-        const {Temperature,Is_On} = dbData;
+        const {Temperature,Is_On,Is_connected} = dbData;
         if(Is_On){
-            if(tempUnit==="C")
+            if(!Is_connected)
+            {
+                return(
+                    <h2>Sensor Unplugged</h2>
+                )
+            }
+            else if(tempUnit==="C")
             {
                 return(
                     <h2>{Temperature}°C </h2>
                 )
             }
-            else{
+            else if(tempUnit==="F") {
                 return(
                     <h2>{celcToFar(Temperature)}°F </h2>
                 )
             }
+
+
+
         }
         else{
             return(
@@ -58,9 +67,6 @@ function Header(props) {
                 <div className="radio">°C </div>
                 <div className="radio"> <input type="radio" value="F" name="temp" onClick={()=>setTempUnit('F')} /></div>
                 <div className="radio">°F </div>
-
-
-
             </div>
             <div className="row">
                 <div className="column">
@@ -72,7 +78,7 @@ function Header(props) {
                            onClick={turnOffBox}/>
 
                 </div>
-                <div className="column"></div>
+                <div className="column2"> <TextSettings/></div>
             </div>
         </div>
     );
