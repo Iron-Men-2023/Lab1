@@ -31,11 +31,10 @@ class Graph extends Component {
         super(props);
         this.generateDataPoints = this.generateDataPoints.bind(this);
         this.state = {
-            dp: [], //this.generateDataPoints(300),
+            dp: [],
             val: "",
             generated: false,
             reversed: false,
-            // dbData: {Is_On: true, Is_connected: true, Server_Button: false, Temp_History: '100,123,122,null,null,98,23,55', Temperature: '34.12'}
             dbData: {},
             tempTitle: "Temperature Degrees C",
             tempMin: 0,
@@ -45,6 +44,7 @@ class Graph extends Component {
 
         this.updateChart = this.updateChart.bind(this);
     }
+    // Components are created (mounted on the DOM (Document Object Model))
     componentDidMount() {
         setInterval(this.updateChart, updateInterval);
     }
@@ -57,16 +57,14 @@ class Graph extends Component {
             console.log(this.state.dbData)
         });
         let test = this.state.dbData.Is_On
-
+        // Won't go into statement until data has been loaded from firebase
         if (test !== undefined && this.state.generated !== true) {
-            console.log("Waiting")
-            // await timeout(3500); //for 1 sec delay
-            console.log("Done")
             let newDp = []
             let s = this.state.dbData.Temp_History
             console.log(s)
             let splitS = s.split(",")
             console.log(splitS)
+            // Parsing stored data from database
             for (let index = 0; index < splitS.length; index++) {
                 if (splitS[index] !== "null") {
                     newDp.push(Number(splitS[index]))
@@ -74,32 +72,32 @@ class Graph extends Component {
                     newDp.push(null)
                 }
             }
+
             let newX = newDp.length-1
             for (let index = 0; index < newDp.length; index++) {
                 this.state.dp.unshift({x:newX, y:newDp[index]})
                 newX -= 1
             }
 
-            console.log("here")
             this.state.generated = true
             this.conversion()
         }
         else if (this.state.generated === true){
-
+            // Moves every current x value "left" in graph
             for (let index = 0; index < this.state.dp.length; index++) {
                 this.state.dp[index].x = this.state.dp[index].x + 1
             }
             // TODO - Will change this to true when its actually connected to device
             if (this.state.dbData.Server_Button === true) {
-                let tmpTemp = this.conversionOnce(Number(this.state.dbData.Temperature).toFixed(2))
+                let tmpTemp = this.conversionOnce(Number(Number(this.state.dbData.Temperature).toFixed(2)))
                 this.state.dp.unshift({x: 0, y: tmpTemp});
             } else {
                 this.state.dp.unshift({x: 0, y: null});
             }
-            // console.log(this.state.dbData.Temperature)
         }
     }
 
+    // For testing purposes only
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         const dps = [];
@@ -111,6 +109,7 @@ class Graph extends Component {
         return dps;
     }
 
+    // Converts between C and F temps
     conversion() {
         if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
         {
@@ -138,10 +137,10 @@ class Graph extends Component {
             this.state.tempTitle = "Temperature Degrees F"
             this.state.tempMin = 50
             this.state.tempMax = 122
-
         }
     }
 
+    // Converts number from database if need be
     conversionOnce(num) {
         if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
         {
@@ -157,6 +156,7 @@ class Graph extends Component {
     render() {
         let val = this.state.dp
 
+        // For when switch is clicked
         const toggleTemp = () => {
             this.state.currTempC = this.state.currTempC !== true;
             if (this.state.currTempC === true){
@@ -166,7 +166,6 @@ class Graph extends Component {
                 this.state.tempTitle = "Temperature Degrees F"
             }
             this.conversion()
-            console.log("Bennnn")
         };
 
         const options = {
