@@ -39,7 +39,7 @@ class Graph extends Component {
             tempTitle: "Temperature Degrees C",
             tempMin: 0,
             tempMax: 50,
-            currTempC: false
+            currTempC: true
         }
 
         this.updateChart = this.updateChart.bind(this);
@@ -80,7 +80,7 @@ class Graph extends Component {
             }
 
             this.state.generated = true
-            this.conversion()
+            // this.conversion()
         }
         else if (this.state.generated === true){
             // Moves every current x value "left" in graph
@@ -111,7 +111,7 @@ class Graph extends Component {
 
     // Converts between C and F temps
     conversion() {
-        if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
+        if (this.state.currTempC === true && this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
         {
             for(let i = 0; i < this.state.dp.length; i++)
             {
@@ -121,7 +121,6 @@ class Graph extends Component {
                 }
             }
             this.state.currTempC = true
-            this.state.tempTitle = "Temperature Degrees C"
             this.state.tempMin = 0
             this.state.tempMax = 50
         }
@@ -134,7 +133,6 @@ class Graph extends Component {
                 }
             }
             this.state.currTempC = false
-            this.state.tempTitle = "Temperature Degrees F"
             this.state.tempMin = 50
             this.state.tempMax = 122
         }
@@ -142,13 +140,13 @@ class Graph extends Component {
 
     // Converts number from database if need be
     conversionOnce(num) {
-        if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "C")
+        if (this.state.tempTitle.charAt(this.state.tempTitle.length-1) === "F")
         {
-            num = (num-32) * (5.0/9.0)
+            num = (num*(9.0/5.0)) + 32.0
         }
         // TODO - this might need to be changed depending on how we store values
         /*else{
-            num = (num*(9.0/5.0)) + 32.0
+            num = (num-32) * (5.0/9.0)
         }*/
         return num
     }
