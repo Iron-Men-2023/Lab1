@@ -5,7 +5,7 @@ import "./Header.css"
 import TextSettings from "./TextSettings";
 function Header(props) {
     const [dbData,setDbData] = useState({})
-    const [boxIsOn, setBoxIsOn] = useState();
+    const [boxIsOn, setBoxIsOn] = useState(true);
     const [tempUnit, setTempUnit] = useState("C");
     const Toggle = require('react-toggle')
     const [serverBtn, setServerBtn] = useState(true);
@@ -51,6 +51,7 @@ function Header(props) {
         const updates = {};
         setServerBtn(!serverBtn);
         if(boxIsOn){
+
             updates['/Lab1/Server_Button'] = serverBtn;
         }
 
