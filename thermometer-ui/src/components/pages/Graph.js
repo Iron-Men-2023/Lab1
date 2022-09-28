@@ -5,6 +5,8 @@ import * as CanvasJSReact from "canvasjs-react-charts";
 import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
 import ToggleSwitch from "../ToggleSwitch";
+
+
 // var CanvasJS = CanvasJSReact.CanvasJS;
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const updateInterval = 1000;
@@ -88,7 +90,7 @@ class Graph extends Component {
                 this.state.dp[index].x = this.state.dp[index].x + 1
             }
             // TODO - Will change this to true when its actually connected to device
-            if (this.state.dbData.Server_Button === true) {
+            if (this.state.dbData.Is_On === true && this.state.dbData.Temperature !== "null")  {
                 let tmpTemp = this.conversionOnce(Number(Number(this.state.dbData.Temperature).toFixed(2)))
                 this.state.dp.unshift({x: 0, y: tmpTemp});
             } else {
@@ -121,7 +123,7 @@ class Graph extends Component {
                 }
             }
             this.state.currTempC = true
-            this.state.tempMin = 0
+            this.state.tempMin = 10
             this.state.tempMax = 50
         }
         else{
@@ -185,7 +187,7 @@ class Graph extends Component {
             axisX: {
                 title: "Seconds Ago",
                 minimum: 0,
-                maximum: 350,
+                maximum: 300,
                 scale: 1,
                 labelAutoFit: true,
                 reversed:  true,
@@ -214,5 +216,4 @@ class Graph extends Component {
         );
     }
 }
-
 export default Graph;
