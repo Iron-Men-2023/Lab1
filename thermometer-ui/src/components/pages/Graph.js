@@ -56,16 +56,16 @@ class Graph extends Component {
             this.setState({
                 dbData: snapshot.val()
             });
-            console.log(this.state.dbData)
+           // console.log(this.state.dbData)
         });
         let test = this.state.dbData.Is_On
         // Won't go into statement until data has been loaded from firebase
         if (test !== undefined && this.state.generated !== true) {
             let newDp = []
             let s = this.state.dbData.Temp_History
-            console.log(s)
+         //   console.log(s)
             let splitS = s.split(",")
-            console.log(splitS)
+           // console.log(splitS)
             // Parsing stored data from database
             for (let index = 0; index < splitS.length; index++) {
                 if (splitS[index] !== "null") {

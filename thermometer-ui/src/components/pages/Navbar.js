@@ -45,21 +45,6 @@ function Navbar(props) {
                             Graphs
                         </Link><
                     /li>
-
-                    <li className='nav-btn'>
-                        {button ? (
-                            <Link to='/sign-up' className= 'btn-link'>
-                                <Button buttonStyle='btn--outline'>Sign Up</Button>
-                            </Link>
-                        ):(
-                            <Link to='/sign-up' className='btn-link'>
-                                <Button buttonStyle= 'btn--outline'
-                                        buttonSize='btn--mobile'
-                                >Sign Up</Button>
-                            </Link>
-                        )
-                            }
-                    </li>
                 </ul>
             </div>
         </div>

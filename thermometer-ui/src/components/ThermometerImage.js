@@ -7,14 +7,14 @@ function ThermometerImage(props) {
     let root = document.querySelector(':root');
     let rootStyles = getComputedStyle(root);
     let bgColor =rootStyles.getPropertyValue('--bgColor');
-    if(parseInt(value)<40){
+    if(parseInt(value)+20<40){
         root.style.setProperty('--bgColor','#276afb')
     }
-    else if(parseInt(value)>40 && parseInt(value)<=70)
+    else if(parseInt(value)+20>40 && parseInt(value)+20<=70)
     {
         root.style.setProperty('--bgColor','#eec853')
     }
-    else if(parseInt(value)>70){
+    else if(parseInt(value)+20>70){
         root.style.setProperty('--bgColor','#f31d1d')
     }
     return (
