@@ -78,7 +78,7 @@ function Header(props) {
                         </div>
                         <div className="column">
                             <input type="button" className="btn"
-                                   value ={boxIsOn? "Turn off 3rd box":"Turn on 3rd box" }
+                                   value ={boxIsOn? "Turn off":"Turn on" }
                                    onClick={turnOffBox}/>
 
                         </div>

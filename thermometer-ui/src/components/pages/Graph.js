@@ -85,12 +85,14 @@ class Graph extends Component {
             // this.conversion()
         }
         else if (this.state.generated === true){
+            const {dbData} = this.state
+            const {Server_Button,Is_On} = dbData
             // Moves every current x value "left" in graph
             for (let index = 0; index < this.state.dp.length; index++) {
                 this.state.dp[index].x = this.state.dp[index].x + 1
             }
             // TODO - Will change this to true when its actually connected to device
-            if (this.state.dbData.Server_Button === true && this.state.dbData.Temperature !== "null")  {
+            if ((Server_Button && Is_On)  && this.state.dbData.Temperature !== "null")  {
                 let tmpTemp = this.conversionOnce(Number(Number(this.state.dbData.Temperature).toFixed(2)))
                 this.state.dp.unshift({x: 0, y: tmpTemp});
             } else {
