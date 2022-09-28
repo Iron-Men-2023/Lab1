@@ -5,6 +5,8 @@ import * as CanvasJSReact from "canvasjs-react-charts";
 import {database} from "../../firebase";
 import {getDatabase, ref, onValue} from "firebase/database";
 import ToggleSwitch from "../ToggleSwitch";
+
+
 // var CanvasJS = CanvasJSReact.CanvasJS;
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const updateInterval = 1000;
@@ -214,5 +216,4 @@ class Graph extends Component {
         );
     }
 }
-
 export default Graph;
