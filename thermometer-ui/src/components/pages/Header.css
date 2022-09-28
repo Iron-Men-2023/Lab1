@@ -2,12 +2,23 @@
     float: left;
     width: 33.33%;
 }
+.column2 {
+    float: left;
+   width: 50%
+
+}
 
 /* Clear floats after the columns */
 .row:after {
     content: "";
     display: table;
     clear: both;
+}
+.radio{
+    float: left;
+    width: 2%;
+    margin-top: 2%;
+
 }
 .btn{
     border-radius: 10px;

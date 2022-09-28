@@ -1,25 +1,27 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ThermometerImage from "../ThermometerImage";
 import ProgressBar from "../ProgressBar";
-
+import {database} from "../../firebase";
+import {getDatabase, ref, child, push, update, onValue} from "firebase/database";
+import Toggle from 'react-toggle'
+import "./Home.css"
 
 function Home(props) {
-    const [value, setValue] = useState('0');
-    const handleChange = event => {
-        setValue(event.target.value);
-    };
+    const [dbData,setDbData] = useState({})
+    useEffect(() => {
+        const firebaseRef= ref(database,"Lab1");
+
+        return onValue(firebaseRef, (snapshot) => {
+            setDbData(snapshot.val());
+        });
+    }, []);
+    const {Temperature} = dbData
     return (
         <div>
-            <h2>Enter temperature</h2>
-            <input type="text"
-                   id="value"
-                   name="value"
-                   onChange={handleChange}
-                   value={value}
-            />
-            <ThermometerImage value={value}/>
+            <ThermometerImage value={Temperature}/>
         </div>
     );
 }
+
 
 export default Home;

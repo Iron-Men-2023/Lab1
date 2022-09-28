@@ -1,3 +1,13 @@
-.GraphClass{
-    margin-top: 150px;
+
+.Switch {
+    position: relative;
+    width: 75px;
+    display: inline-block;
+    text-align: left;
+    top: 75px;
+}
+
+.Graph {
+    position: relative;
+    top: 150px;
 }
