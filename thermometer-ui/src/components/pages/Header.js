@@ -8,7 +8,7 @@ function Header(props) {
     const [boxIsOn, setBoxIsOn] = useState();
     const [tempUnit, setTempUnit] = useState("C");
     const Toggle = require('react-toggle')
-
+    const [serverBtn, setServerBtn] = useState(true);
     useEffect(() => {
         const firebaseRef= ref(database,"Lab1");
 
@@ -21,8 +21,8 @@ function Header(props) {
         return degCelc *9/5 +32
     }
     function displayTemp(){
-        const {Temperature,Is_On,Is_connected} = dbData;
-        if(Is_On){
+        const {Temperature,Is_On,Is_connected,Server_Button} = dbData;
+        if(Server_Button){
             if(!Is_connected)
             {
                 return(
@@ -40,9 +40,6 @@ function Header(props) {
                     <h2>{celcToFar(Temperature)}°F </h2>
                 )
             }
-
-
-
         }
         else{
             return(
@@ -52,8 +49,11 @@ function Header(props) {
     }
     function turnOffBox(){
         const updates = {};
-        boxIsOn? updates['/Lab1/Is_On'] = false:
-            updates['/Lab1/Is_On'] = true;
+        setServerBtn(!serverBtn);
+        if(boxIsOn){
+            updates['/Lab1/Server_Button'] = serverBtn;
+        }
+
 
         return update(ref(database), updates);
     }
