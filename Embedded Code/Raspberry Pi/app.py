@@ -42,7 +42,7 @@ while True:
     if (ser.in_waiting > 0):
     
         arduino_message = ser.readline().decode('utf-8').rstrip()
-        print(arduino_message)
+
         if(arduino_message=="Switch off"):
             db.child("Lab1").update({"Is_On":False})
             db.child("Lab1").update({"Server_Button":True})
